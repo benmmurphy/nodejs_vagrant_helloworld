@@ -1,0 +1,42 @@
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting 5 workers
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting worker: 91643
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting worker: 91644
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting worker: 91645
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting worker: 91646
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Starting worker: 91647
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Worker initialized: 91645
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Worker initialized: 91646
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Worker initialized: 91644
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Worker initialized: 91647
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] Worker initialized: 91643
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Process Master 1] ProcessMaster started
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Master] New process master (1) started
+[Sun Feb 19 2012 21:55:00 GMT+0000 (GMT)] INFO [Master] Cluster initialized
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting 5 workers
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting worker: 91667
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting worker: 91670
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting worker: 91671
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting worker: 91672
+[Sun Feb 19 2012 21:55:16 GMT+0000 (GMT)] INFO [Process Master 2] Starting worker: 91673
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] Worker initialized: 91670
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] Worker initialized: 91672
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] Worker initialized: 91673
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] Worker initialized: 91671
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] Worker initialized: 91667
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 2] ProcessMaster started
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Master] New process master (2) started
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Master] Stopping old process master (1)
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Stopping workers
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Sending worker: 91643 signal SIGQUIT
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Sending worker: 91644 signal SIGQUIT
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Sending worker: 91645 signal SIGQUIT
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Sending worker: 91646 signal SIGQUIT
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Sending worker: 91647 signal SIGQUIT
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Worker 91647 died. State: stopping
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Worker 91645 died. State: stopping
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Worker 91644 died. State: stopping
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Worker 91643 died. State: stopping
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] Worker 91646 died. State: stopping
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Process Master 1] All workers gracefully terminated.
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Master] Process master (1) stopped
+[Sun Feb 19 2012 21:55:17 GMT+0000 (GMT)] INFO [Master] Old master has shutdown (1). Restart complete
