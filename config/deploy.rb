@@ -38,8 +38,10 @@ namespace :deploy do
     upstart_script = <<-EOF
 description "#{application}"
 
-start on startup
-stop on shutdown
+start on filesystem or runlevel [2345]
+stop on runlevel [!2345]
+
+kill signal QUIT
 
 env NODE_ENV=#{stage}
 env PORT=#{port}
