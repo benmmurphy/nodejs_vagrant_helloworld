@@ -33,6 +33,10 @@ namespace :deploy do
     run "#{try_sudo :as => 'root'} mv #{deploy_to}/shared/tmp/new_file #{target}"
   end
 
+  task :status, :roles => :app do
+    run "#{try_sudo :as => 'root'} status #{application}"
+  end
+
   task :start, :roles => :app do
     run "#{try_sudo :as => 'root'} start #{application}"
   end
