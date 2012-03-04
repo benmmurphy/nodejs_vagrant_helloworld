@@ -106,7 +106,7 @@ namespace :deploy do
   end
 
   task :npm_install, :roles => :app do
-    run "cd #{current_path}" && npm install
+    run "cd #{release_path} && npm install"
   end
 
   after 'deploy:setup', 'deploy:make_shared_tmp'
