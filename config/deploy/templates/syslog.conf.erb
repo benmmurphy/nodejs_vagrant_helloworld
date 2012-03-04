@@ -1,0 +1,3 @@
+$template <%= application %>_format,"%msg%\n"
+:syslogtag,isequal,"<%= syslog_tag %>:" <%= deploy_to %>/shared/log/worker.log;<%= application %>_format
+& ~

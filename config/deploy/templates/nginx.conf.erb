@@ -1,0 +1,10 @@
+upstream "backend_<%= application %>" {
+  server "unix:<%= deploy_to %>/shared/tmp/socket";
+}
+
+server {
+  server_name "<%= virtual_host %>";
+  location / {
+    proxy_pass "http://backend_<%= application %>";
+  }
+}

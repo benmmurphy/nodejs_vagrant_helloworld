@@ -9,7 +9,8 @@ set :repository, "."
 set :deploy_via, :copy
 
 set :application, "helloworld"
-set :virtual_host, "helloworld"
+set :virtual_host, "#{application}"
+
 set :node_file, "app.js"
 
 set :daemon_user, "www-data"
@@ -21,65 +22,63 @@ set :scm, :git
 # uncomment to use nginx
 set :http_port, 3000
 
+set :syslog_tag, "#{application}"
 set :deploy_to, "/opt/nodeapps/#{application}"
 
 namespace :deploy do
+
+  def put_file(contents, target)
+    put contents, "#{deploy_to}/shared/tmp/new_file"
+    run "#{try_sudo :as => 'root'} chown root:root #{deploy_to}/shared/tmp/new_file"
+    run "#{try_sudo :as => 'root'} mv #{deploy_to}/shared/tmp/new_file #{target}"
+  end
+
   task :start, :roles => :app do
-    run "start #{application}"
+    run "#{try_sudo :as => 'root'} start #{application}"
   end
 
   task :stop, :roles => :app do
-    run "stop #{application}"
+    run "#{try_sudo :as => 'root'} stop #{application}"
   end
 
   task :write_upstart_script, :roles => :app do
     port = fetch(:http_port, "socket")
 
-    upstart_script = <<-EOF
-description "#{application}"
+    template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "upstart.conf.erb"))
 
-start on filesystem or runlevel [2345]
-stop on runlevel [!2345]
+    upstart_script = ERB.new(template).result(binding)
+    put_file upstart_script, "/etc/init/#{application}.conf"
+  end
 
-kill signal QUIT
+  task :write_syslog_script, :roles => :app do
 
-env NODE_ENV=#{stage}
-env PORT=#{port}
+    template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "syslog.conf.erb"))
 
-script
-  set -e
-  mkfifo #{deploy_to}/shared/tmp/cronolog
-  ( /usr/bin/cronolog #{deploy_to}/shared/log/staging.%Y.%m.%d.log -S #{deploy_to}/shared/log/staging.log < #{deploy_to}/shared/tmp/cronolog & )
-  exec > #{deploy_to}/shared/tmp/cronolog 2>&1
-  rm #{deploy_to}/shared/tmp/cronolog
-  exec start-stop-daemon -c #{daemon_user} -g #{daemon_group} -d #{deploy_to}/shared/tmp -m -p #{deploy_to}/shared/pids/master.pid --startas /usr/bin/node -S -- #{deploy_to}/current/#{node_file}
-end script
+    syslog_script = ERB.new(template).result(binding)
 
-respawn
-EOF
+    put_file syslog_script, "/etc/rsyslog.d/20-#{application}.conf"   
+    run "#{try_sudo :as => 'root'} restart rsyslog"
+  end
 
-    put upstart_script, "/tmp/#{application}_upstart.conf"
-    run "#{try_sudo :as => 'root'} mv /tmp/#{application}_upstart.conf /etc/init/#{application}.conf"
- end
+  task :write_logrotate_conf, :roles => :app do
 
- task :write_nginx_config, :roles => :app do
-   if fetch(:http_port, "socket") == "socket"
-     nginx_config = <<-EOF
+    template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "logrotate.conf.erb"))
 
-upstream "backend_#{application}" {
-  server "unix:#{deploy_to}/shared/tmp/socket";
-}
+    logrotate_conf = ERB.new(template).result(binding)
+    put_file logrotate_conf, "/etc/logrotate.d/#{application}"
+    run "#{try_sudo :as => 'root'} restart rsyslog"
+  end
 
-server {
-  server_name "#{virtual_host}";
-  location / {
-    proxy_pass "http://backend_#{application}";
-  }
-}
-EOF
 
-      put nginx_config, "/tmp/#{application}_nginx.config"
-      run "#{try_sudo :as => 'root'} mv /tmp/#{application}_nginx.config /etc/nginx/sites-available/#{application}"
+
+  task :write_nginx_config, :roles => :app do
+    if fetch(:http_port, "socket") == "socket"
+      template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "nginx.conf.erb"))
+
+      nginx_config = ERB.new(template).result(binding)
+
+
+      put_file nginx_config, "/etc/nginx/sites-available/#{application}"
       run "#{try_sudo :as => 'root'} ln -sf /etc/nginx/sites-available/#{application} /etc/nginx/sites-enabled/#{application}"
       run "#{try_sudo :as => 'root'} /etc/init.d/nginx reload"
     end
@@ -106,9 +105,17 @@ EOF
     run "#{try_sudo :as => "root"} start #{application} || #{try_sudo :as => "root"} reload #{application}"
   end
 
+  task :npm_install, :roles => :app do
+    run "cd #{current_path}" && npm install
+  end
+
   after 'deploy:setup', 'deploy:make_shared_tmp'
   after 'deploy:setup', 'deploy:change_group'
   after 'deploy:setup', 'deploy:write_upstart_script'
+  after 'deploy:setup', 'deploy:write_syslog_script'
+  after 'deploy:setup', 'deploy:write_logrotate_conf'
   after 'deploy:setup', 'deploy:write_nginx_config'
+
+  after "deploy:update_code", "deploy:npm_install"
 end
 

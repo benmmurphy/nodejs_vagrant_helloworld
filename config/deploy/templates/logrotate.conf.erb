@@ -1,0 +1,27 @@
+<%= deploy_to %>/shared/log/worker.log
+{
+        rotate 4
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                invoke-rc.d rsyslog reload >/dev/null 2>&1 || true
+        endscript
+}
+
+<%= deploy_to %>/shared/log/master.log
+{
+        rotate 4
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                kill -USR2 `cat <%= deploy_to %>/shared/pids/master.pid` 2>&1 || true
+        endscript
+}
