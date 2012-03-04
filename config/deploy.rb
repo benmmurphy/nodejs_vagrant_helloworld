@@ -102,7 +102,9 @@ namespace :deploy do
   end
 
   task :restart, :roles => :app do
-    run "#{try_sudo :as => "root"} start #{application} || #{try_sudo :as => "root"} reload #{application}"
+    cmd = "STATUS=`#{try_sudo :as => 'root'} status #{application}`; echo Previous Status: $STATUS; RESULT=`#{try_sudo :as => 'root'} start #{application} 2>&1`; if [[ $? -eq 0 ]]; then echo $RESULT; else echo Reloading; #{try_sudo :as => 'root'} reload #{application}; fi"
+
+    run cmd, :shell => "/bin/bash"
   end
 
   task :npm_install, :roles => :app do
