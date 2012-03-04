@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "helloworld",
   "version":"1.0.0",
   "dependencies": {
       "ncluster": "= 0.1.2",
