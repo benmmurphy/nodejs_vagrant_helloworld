@@ -1,15 +1,13 @@
 require 'capistrano/ext/multistage'
 
-set :stages, %(staging, production)
+set :stages, %(staging, production, staging_nginx)
 set :default_stage, 'staging'
 
+set :application, "helloworld"
 set :normalize_asset_timestamps, false
 
 set :repository, "."
 set :deploy_via, :copy
-
-set :application, "helloworld"
-set :virtual_host, "#{application}"
 
 set :node_file, "app.js"
 
@@ -19,10 +17,8 @@ set :data_group, "www-data"
 
 set :scm, :git
 
-# uncomment to use nginx
-set :http_port, 3000
 
-set :syslog_tag, "#{application}"
+set :service_name, "#{application}"
 set :deploy_to, "/opt/nodeapps/#{application}"
 
 namespace :deploy do
@@ -34,15 +30,15 @@ namespace :deploy do
   end
 
   task :status, :roles => :app do
-    run "#{try_sudo :as => 'root'} status #{application}"
+    run "#{try_sudo :as => 'root'} status #{service_name}"
   end
 
   task :start, :roles => :app do
-    run "#{try_sudo :as => 'root'} start #{application}"
+    run "#{try_sudo :as => 'root'} start #{service_name}"
   end
 
   task :stop, :roles => :app do
-    run "#{try_sudo :as => 'root'} stop #{application}"
+    run "#{try_sudo :as => 'root'} stop #{service_name}"
   end
 
   task :write_upstart_script, :roles => :app do
@@ -51,7 +47,7 @@ namespace :deploy do
     template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "upstart.conf.erb"))
 
     upstart_script = ERB.new(template).result(binding)
-    put_file upstart_script, "/etc/init/#{application}.conf"
+    put_file upstart_script, "/etc/init/#{service_name}.conf"
   end
 
   task :write_syslog_script, :roles => :app do
@@ -60,7 +56,7 @@ namespace :deploy do
 
     syslog_script = ERB.new(template).result(binding)
 
-    put_file syslog_script, "/etc/rsyslog.d/20-#{application}.conf"   
+    put_file syslog_script, "/etc/rsyslog.d/20-#{service_name}.conf"   
     run "#{try_sudo :as => 'root'} restart rsyslog"
   end
 
@@ -69,7 +65,7 @@ namespace :deploy do
     template = File.read(File.join(File.dirname(__FILE__), "deploy", "templates", "logrotate.conf.erb"))
 
     logrotate_conf = ERB.new(template).result(binding)
-    put_file logrotate_conf, "/etc/logrotate.d/#{application}"
+    put_file logrotate_conf, "/etc/logrotate.d/#{service_name}"
     run "#{try_sudo :as => 'root'} restart rsyslog"
   end
 
@@ -98,15 +94,15 @@ namespace :deploy do
   end
 
   task :start, :roles => :app do
-    run "#{try_sudo :as => "root"} start #{application}"
+    run "#{try_sudo :as => "root"} start #{service_name}"
   end
 
   task :stop, :roles => :app do
-    run "#{try_sudo :as => "root"} stop #{application}"
+    run "#{try_sudo :as => "root"} stop #{service_name}"
   end
 
   task :restart, :roles => :app do
-    cmd = "STATUS=`#{try_sudo :as => 'root'} status #{application}`; echo Previous Status: $STATUS; RESULT=`#{try_sudo :as => 'root'} start #{application} 2>&1`; if [[ $? -eq 0 ]]; then echo $RESULT; else echo Reloading; #{try_sudo :as => 'root'} reload #{application}; fi"
+    cmd = "STATUS=`#{try_sudo :as => 'root'} status #{service_name}`; echo Previous Status: $STATUS; RESULT=`#{try_sudo :as => 'root'} start #{service_name} 2>&1`; if [[ $? -eq 0 ]]; then echo $RESULT; else echo Reloading; #{try_sudo :as => 'root'} reload #{service_name}; fi"
 
     run cmd, :shell => "/bin/bash"
   end
