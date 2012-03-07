@@ -2,7 +2,7 @@
   "name": "helloworld",
   "version":"1.0.0",
   "dependencies": {
-      "ncluster": "= 0.1.3",
+      "ncluster": "= 0.1.4",
       "express" : "= 2.5.8"
   },
   "engines": { "node": "*" }
