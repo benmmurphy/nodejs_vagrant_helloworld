@@ -2,6 +2,8 @@ Example of using ncluster with capistrano.
 
 # Dependencies
 ## Capistrano
+    gem install capistrano
+    
 ## Nodejs Vagrant
 
     gem install vagrant
